@@ -1,0 +1,150 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "http-smtp.json",
+  "type": "object",
+  "title": "HTTP SMTP JSON Schema",
+  "additionalProperties": false,
+  "properties": {
+    "attachments": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/attachment"
+      }
+    },
+    "bcc": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/emailAddress"
+      }
+    },
+    "cc": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/emailAddress"
+      }
+    },
+    "dkim": {
+      "$ref": "#/definitions/dkim"
+    },
+    "from": {
+      "$ref": "#/definitions/emailAddress"
+    },
+    "html": {
+      "type": "string"
+    },
+    "priority": {
+      "type": "string",
+      "enum": ["low", "medium", "high"]
+    },
+    "replyTo": {
+      "$ref": "#/definitions/emailAddress"
+    },
+    "subject": {
+      "type": "string"
+    },
+    "test": {
+      "type": "boolean",
+      "description": "If true then don't send email only validate the request"
+    },
+    "text": {
+      "type": "string"
+    },
+    "to": {
+      "items": {
+        "$ref": "#/definitions/emailAddress"
+      },
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "from",
+    "to"
+  ],
+  "anyOf": [
+    {
+      "required": [
+        "html"
+      ]
+    },
+    {
+      "required": [
+        "text"
+      ]
+    }
+  ],
+  "definitions": {
+    "attachment": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "content": {
+          "type": "string"
+        },
+        "filename": {
+          "type": "string"
+        },
+        "contentType": {
+          "type": "string"
+        },
+        "cid": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "content",
+        "filename"
+      ]
+    },
+    "emailAddress": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "idn-email"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "email"
+      ]
+    },
+    "dkim": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "domainName": {
+          "type": "string"
+        },
+        "keySelector": {
+          "type": "string"
+        },
+        "privateKey": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "domainName",
+        "keySelector",
+        "privateKey"
+      ]
+    }
+  },
+  "errorMessage": {
+    "type": "Request body should be a EmailRequest type",
+    "required": {
+      "from": "\"from\" property is required"
+    },
+    "properties": {
+      "html": "\"html\" or \"text\" property is required",
+      "text": "\"html\" or \"text\" property is required"
+    }
+  }
+}
